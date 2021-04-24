@@ -163,7 +163,7 @@ def get_dist_metric(node1,node2):
                     (8,13): 2,
                     (8,10): 4,
                     (7,11): 1,
-                    (13,4): 4,
+                    (13,14): 4,
                     (11,14): 5,
                     (9,16): 2,
                     (6,12): 5,
@@ -173,12 +173,37 @@ def get_dist_metric(node1,node2):
                     }
     return edge_weights[(node1, node2)] 
 
-def get_info_dict(node):
 
+# Sets attributes for nodes, including names
+def get_info_dict(node):
+    info_dict = {0: {'name': 'Hassyampa'},
+                 1: {'name': 'Subway'},
+                 2: {'name': 'R1'},
+                 3: {'name': 'Adelphi Commons'},
+                 4: {'name': 'Starbucks'},
+                 5: {'name': 'R2'},
+                 6: {'name': 'Vista Del Sol'},
+                 7: {'name': 'Papa Johns'},
+                 8: {'name': 'R6'},
+                 9: {'name': 'R3'},
+                 10: {'name': 'Barrett'},
+                 11: {'name': 'R7'},
+                 12: {'name': 'R5'},
+                 13: {'name': 'McDonalds'},
+                 14: {'name': 'R4'},
+                 15: {'name': 'Taco Bell'},
+                 16: {'name': 'Tooker House'},
+                 17: {'name': 'Sonora'}, 
+                 }                 
+    return info_dict[node]
+
+#code for heuristic attribute if required 
+def get_heuristic(node_x, node_y):
+    pass
 
 # Code from networkx that creates the same graph
 G = nx.Graph()
-e = [(0, 1, get_dist_metric(0,1), 
+e = [(0, 1, get_dist_metric(0,1)), 
      (0, 2, get_dist_metric(0,2)), 
      (0, 5, get_dist_metric(0,5)), 
      (2, 3, get_dist_metric(2,3)), 
@@ -202,6 +227,12 @@ e = [(0, 1, get_dist_metric(0,1),
      (11,15,get_dist_metric(11,15)), 
      (14,15,get_dist_metric(14,15))]
 G.add_weighted_edges_from(e)
+
+#show edge weights in graph when drawn
+
+pos = nx.spiral_layout(G)
+nx.draw(G, with_labels=True)
+nx.draw_networkx_edge_labels(G,pos)
                
 # This is my Dijkstra code
 """
