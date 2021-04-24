@@ -1,3 +1,5 @@
+import networkx as nx
+import matplotlib.pyplot as plt
 class Node:
   
     def __init__(self, data, indexloc = None):
@@ -144,37 +146,92 @@ class Graph:
                     dist[node.index][1].append(node)
         return dist  
 
-# Code that creates a graph(from blog post)
+def get_dist_metric(node1,node2):
+    edge_weights = {(0,1): 3,
+                    (0,2): 5,
+                    (1,2): 4,
+                    (2,3): 6,
+                    (0,5): 2,
+                    (2,4): 4,
+                    (2,6): 7,
+                    (4,6): 4,
+                    (1,9): 5,
+                    (3,17): 7,
+                    (5,8): 4,
+                    (5,10): 6.5,
+                    (5,7): 3,
+                    (8,13): 2,
+                    (8,10): 4,
+                    (7,11): 1,
+                    (13,4): 4,
+                    (11,14): 5,
+                    (9,16): 2,
+                    (6,12): 5,
+                    (12,16): 4,
+                    (11,15): 8,
+                    (14,15): 6
+                    }
+    return edge_weights[(node1, node2)] 
+
+def get_info_dict(node):
 
 
 # Code from networkx that creates the same graph
-
-# This is your Dijkstra code
+G = nx.Graph()
+e = [(0, 1, get_dist_metric(0,1), 
+     (0, 2, get_dist_metric(0,2)), 
+     (0, 5, get_dist_metric(0,5)), 
+     (2, 3, get_dist_metric(2,3)), 
+     (2, 4, get_dist_metric(2,4)), 
+     (2,6, get_dist_metric(2,6)), 
+     (1,2, get_dist_metric(1,2)), 
+     (4,6,get_dist_metric(4,6)), 
+     (1,9,get_dist_metric(1,9)), 
+     (3,17,get_dist_metric(3,17)), 
+     (5,8,get_dist_metric(5,8)), 
+     (5,10,get_dist_metric(5,10)), 
+     (5,7,get_dist_metric(5,7)), 
+     (8,13,get_dist_metric(8,13)), 
+     (8,10,get_dist_metric(8,10)), 
+     (7,11,get_dist_metric(7,11)), 
+     (13,14,get_dist_metric(13,14)), 
+     (11,14,get_dist_metric(11,14)), 
+     (9,16,get_dist_metric(9,16)), 
+     (6,12,get_dist_metric(6,12)), 
+     (12,16,get_dist_metric(12,16)), 
+     (11,15,get_dist_metric(11,15)), 
+     (14,15,get_dist_metric(14,15))]
+G.add_weighted_edges_from(e)
+               
+# This is my Dijkstra code
 """
 G: networkx graph
 node_to_search_from
 node_to_search_to
 """
-def dijkstra_my(G, from_node, to_node):
+def dijkstra_my(G, node_x, node_y=None):
         # Get index of node (or maintain int passed in)
-        nodenum = self.get_index_from_node(node)
+        # nodenum = self.get_index_from_node(node)
+
         # Make an array keeping track of distance from node to any node
         # in self.nodes. Initialize to infinity for all nodes but the 
         # starting node, keep track of "path" which relates to distance.
         # Index 0 = distance, index 1 = node hops
-        dist = [None] * len(self.nodes)
-        for i in range(len(dist)):
+        dist = [None] * len(G.nodes())
+        for i in range(len(G.nodes())):
             dist[i] = [float("inf")]
-            dist[i].append([self.nodes[nodenum]])
+            dist[i].append([node_x])
         
-        dist[nodenum][0] = 0
+        dist[node_x][0] = 0
         # Queue of all nodes in the graph
         # Note the integers in the queue correspond to indices of node
         # locations in the self.nodes array
-        queue = [i for i in range(len(self.nodes))]
+        queue = [i for i in range(len(G.nodes()))]
         # Set of numbers seen so far
         seen = set()
         while len(queue) > 0:
+            if node_y in seen:
+                break
             # Get node in queue that has not yet been seen
             # that has smallest distance to starting node
             min_dist = float("inf")
@@ -188,17 +245,22 @@ def dijkstra_my(G, from_node, to_node):
             queue.remove(min_node)
             seen.add(min_node)
             # Get all next hops 
-            connections = self.connections_from(min_node)
+            connections = [(n, G[min_node][n]["weight"]) for n in G.neighbors(min_node)]
             # For each connection, update its path and total distance from 
             # starting node if the total distance is less than the current distance
             # in dist array
             for (node, weight) in connections: 
                 tot_dist = weight + min_dist
-                if tot_dist < dist[node.index][0]:
-                    dist[node.index][0] = tot_dist
-                    dist[node.index][1] = list(dist[min_node][1])
-                    dist[node.index][1].append(node)
+                if tot_dist < dist[node][0]:
+                    dist[node][0] = tot_dist
+                    dist[node][1] = list(dist[min_node][1])
+                    dist[node][1].append(node)
         return dist  
 
-dist = dijkstra_my(G, ..., ...)
+dist = dijkstra_my(G, node_x=0)
 print('The distance returned by Dijkstras is:', dist)
+
+dist = dijkstra_my(G, node_x=0, node_y=6)
+print('The distance returned by Dijkstras is:', dist[6])
+nx.draw(G, with_labels= True)
+plt.show()
