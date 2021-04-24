@@ -203,6 +203,26 @@ def get_heuristic(node_x, node_y):
 
 # Code from networkx that creates the same graph
 G = nx.Graph()
+G.add_nodes_from([(0, get_info_dict(0)), 
+                  (1, get_info_dict(1)), 
+                  (2, get_info_dict(2)), 
+                  (3, get_info_dict(3)),
+                  (4, get_info_dict(4)),
+                  (5, get_info_dict(5)),
+                  (6, get_info_dict(6)),
+                  (7, get_info_dict(7)),
+                  (8, get_info_dict(8)),
+                  (9, get_info_dict(9)),
+                  (10, get_info_dict(10)),
+                  (11, get_info_dict(11)),
+                  (12, get_info_dict(12)),
+                  (13, get_info_dict(13)),
+                  (14, get_info_dict(14)),
+                  (15, get_info_dict(15)),
+                  (16, get_info_dict(16)),
+                  (17, get_info_dict(17)),
+                  ])
+
 e = [(0, 1, get_dist_metric(0,1)), 
      (0, 2, get_dist_metric(0,2)), 
      (0, 5, get_dist_metric(0,5)), 
@@ -230,9 +250,6 @@ G.add_weighted_edges_from(e)
 
 #show edge weights in graph when drawn
 
-pos = nx.spiral_layout(G)
-nx.draw(G, with_labels=True)
-nx.draw_networkx_edge_labels(G,pos)
                
 # This is my Dijkstra code
 """
@@ -293,5 +310,11 @@ print('The distance returned by Dijkstras is:', dist)
 
 dist = dijkstra_my(G, node_x=0, node_y=6)
 print('The distance returned by Dijkstras is:', dist[6])
-nx.draw(G, with_labels= True)
+
+pos = nx.spring_layout(G)
+# nx.draw_networkx_edge_labels(G,pos)
+nx.draw_networkx_nodes(G, pos, node_size=700, node_color='pink')
+nx.draw_networkx_edges(G, pos, edgelist=e)
+nx.draw_networkx_edge_labels(G, pos, edge_labels={(x,y): weight for x,y,weight in G.edges.data("weight")}, font_color='red')
+nx.draw_networkx_labels(G, pos, labels=dict(G.nodes(data='name')))
 plt.show()
