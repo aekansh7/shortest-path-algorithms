@@ -15,7 +15,11 @@ def get_dist_metric(node1,node2):
                     (3,4): 0.12,
                     (4,5): 0.32,
                     }
-    return edge_weights[(node1, node2)] 
+
+    edge_weight = edge_weights.get((node1, node2))
+    if not edge_weight:
+        edge_weight = edge_weights.get((node2,node1))
+    return edge_weight
 
 
 # Sets attributes for nodes, including names
@@ -118,8 +122,8 @@ def a_star_search(G, node_x, node_y):
     return dist  
 
 #input source and destination nodes here
-node_x = 0 #source node
-node_y = 4 #destination node
+node_x = 5 #source node
+node_y = 0 #destination node
 
 dist = a_star_search(G, node_x=node_x, node_y=node_y)
 # print the distance from source to destination node
@@ -129,7 +133,7 @@ pos = nx.circular_layout(G)
 # nx.draw_networkx_edge_labels(G,pos)
 nx.draw_networkx_nodes(G, pos, node_size=400, node_color='pink')
 nx.draw_networkx_edges(G, pos, edgelist=e, edge_color='grey')
-nx.draw_networkx_edges(G, pos, edgelist=[(dist[node_y][1][idx], dist[node_y][1][idx+1], get_dist_metric(idx, idx+1)) 
+nx.draw_networkx_edges(G, pos, edgelist=[(dist[node_y][1][idx], dist[node_y][1][idx+1], get_dist_metric(dist[node_y][1][idx], dist[node_y][1][idx+1])) 
                                          for idx in range(len(dist[node_y][1]) - 1)], edge_color='red', arrows=True)
 nx.draw_networkx_edge_labels(G, pos, edge_labels={(x,y): weight for x,y,weight in G.edges.data("weight")}, font_color='red')
 nx.draw_networkx_labels(G, pos, labels=dict(G.nodes(data='name')), font_size=9)

@@ -30,7 +30,11 @@ def get_dist_metric(node1,node2):
                     (11,15): 8,
                     (14,15): 6
                     }
-    return edge_weights[(node1, node2)] 
+    
+    edge_weight = edge_weights.get((node1, node2))
+    if not edge_weight:
+        edge_weight = edge_weights.get((node2,node1))
+    return edge_weight
 
 
 # Sets attributes for nodes, including names
@@ -163,8 +167,8 @@ def dijkstra_my(G, node_x, node_y=None):
 
 #input source and destination nodes here
 
-node_x = 0  # source node
-node_y = 6  # destination node
+node_x = 13  # source node
+node_y = 3  # destination node
 dist = dijkstra_my(G, node_x=node_x)
 
 # print the distance from source to every other node
@@ -179,7 +183,7 @@ pos = nx.circular_layout(G)
 # nx.draw_networkx_edge_labels(G,pos)
 nx.draw_networkx_nodes(G, pos, node_size=300, node_color='orange')
 nx.draw_networkx_edges(G, pos, edgelist=e, arrows=False, edge_color= 'grey')
-nx.draw_networkx_edges(G, pos, edgelist=[(dist[node_y][1][idx], dist[node_y][1][idx+1], get_dist_metric(idx, idx+1)) 
+nx.draw_networkx_edges(G, pos, edgelist=[(dist[node_y][1][idx], dist[node_y][1][idx+1], get_dist_metric(dist[node_y][1][idx], dist[node_y][1][idx+1])) 
                                          for idx in range(len(dist[node_y][1]) - 1)], edge_color='red', arrows=True)
 nx.draw_networkx_edge_labels(G, pos, edge_labels={(x,y): weight for x,y,weight in G.edges.data("weight")}, font_color='red')
 nx.draw_networkx_labels(G, pos, labels=dict(G.nodes(data='name')), font_size=9)
