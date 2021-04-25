@@ -1,3 +1,6 @@
+#Aekansh IEE 598 Project
+
+#import the required libraries
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -57,7 +60,7 @@ def get_info_dict(node):
 def get_heuristic(node_x, node_y):
     pass
 
-# Code from networkx that creates the same graph
+# Code from networkx that creates the graph
 G = nx.Graph()
 G.add_nodes_from([(0, get_info_dict(0)), 
                   (1, get_info_dict(1)), 
@@ -106,39 +109,35 @@ G.add_weighted_edges_from(e)
 
 #show edge weights in graph when drawn
 
-#my graph for A Star Search
+
                
 # This is my Dijkstra code
 """
 G: networkx graph
-node_to_search_from
-node_to_search_to
+node_x: source node
+node_y: destination node
 """
 def dijkstra_my(G, node_x, node_y=None):
-    # Get index of node (or maintain int passed in)
-    # nodenum = self.get_index_from_node(node)
-
-    # Make an array keeping track of distance from node to any node
-    # in self.nodes. Initialize to infinity for all nodes but the 
-    # starting node, keep track of "path" which relates to distance.
-    # Index 0 = distance, index 1 = node hops
+    # distance is list of lists containing smallest from source node
+    # to each node in the network
     dist = [None] * len(G.nodes())
     for i in range(len(G.nodes())):
         dist[i] = [float("inf")]
         dist[i].append([node_x])
-    
+    # distance from source node to itself
     dist[node_x][0] = 0
-    # Queue of all nodes in the graph
-    # Note the integers in the queue correspond to indices of node
-    # locations in the self.nodes array
+    # Queue data structure to keep track of nodes
     queue = [i for i in range(len(G.nodes()))]
     # Set of numbers seen so far
     seen = set()
+    # iterate over queue to find the minimum distance
     while len(queue) > 0:
+        # if goal node is specified then stop 
+        # when min distance to goal node has been found
         if node_y in seen:
             break
-        # Get node in queue that has not yet been seen
-        # that has smallest distance to starting node
+
+        # determine node with the smallest distance from the current node
         min_dist = float("inf")
         min_node = None
         for n in queue: 
@@ -146,14 +145,14 @@ def dijkstra_my(G, node_x, node_y=None):
                 min_dist = dist[n][0]
                 min_node = n
         
-        # Add min distance node to seen, remove from queue
+        # pop the node with min distance from queue
+        # and add it to seen set()
         queue.remove(min_node)
         seen.add(min_node)
-        # Get all next hops 
+
+        # get nodes connected to min node
         connections = [(n, G[min_node][n]["weight"]) for n in G.neighbors(min_node)]
-        # For each connection, update its path and total distance from 
-        # starting node if the total distance is less than the current distance
-        # in dist array
+        # update the distance and the path
         for (node, weight) in connections: 
             tot_dist = weight + min_dist
             if tot_dist < dist[node][0]:
@@ -162,12 +161,17 @@ def dijkstra_my(G, node_x, node_y=None):
                 dist[node][1].append(node)
     return dist  
 
-node_x = 0
-node_y = 6
+#input source and destination nodes here
+
+node_x = 0  # source node
+node_y = 6  # destination node
 dist = dijkstra_my(G, node_x=node_x)
+
+# print the distance from source to every other node
 print('The distance returned by Dijkstras is:', dist)
 
 dist = dijkstra_my(G, node_x=node_x, node_y=node_y)
+# print the distance from source to destination node
 print('The distance returned by Dijkstras is:', dist[node_y])
 
 

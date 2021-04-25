@@ -55,24 +55,16 @@ e = [(0, 1, get_dist_metric(0,1)),
      (4,5,get_dist_metric(4,5))]
 G.add_weighted_edges_from(e)
 
-# A* search algo
-def a_star_search(G, node_x, node_y):
-    # Get index of node (or maintain int passed in)
-    # nodenum = self.get_index_from_node(node)
 
-    # Make an array keeping track of distance from node to any node
-    # in self.nodes. Initialize to infinity for all nodes but the 
-    # starting node, keep track of "path" which relates to distance.
-    # Index 0 = distance, index 1 = node hops
+def a_star_search(G, node_x, node_y):
+    
     dist = [None] * len(G.nodes())
     for i in range(len(G.nodes())):
         dist[i] = [float("inf")]
         dist[i].append([node_x])
     
     dist[node_x][0] = 0
-    # Queue of all nodes in the graph
-    # Note the integers in the queue correspond to indices of node
-    # locations in the self.nodes array
+    
     frontier = PriorityQueue()
     frontier.put(node_x, 0)
     # Set of numbers seen so far
@@ -80,25 +72,16 @@ def a_star_search(G, node_x, node_y):
     while not frontier.empty():
         if node_y in seen:
             break
-        # Get node in queue that has not yet been seen
-        # that has smallest distance to starting node
-        # min_dist = float("inf")
-        # min_node = None
-        # for n in queue: 
-        #     if dist[n][0] < min_dist and n not in seen:
-        #         min_dist = dist[n][0]
-        #         min_node = n
+       
         
         min_node = frontier.get()
         min_dist = dist[min_node][0]
         print(f"Min node: {min_node}")
-        # Add min distance node to seen, remove from queue
+        
         seen.add(min_node)
-        # Get all next hops 
+        
         connections = [(n, G[min_node][n]["weight"]) for n in G.neighbors(min_node)]
-        # For each connection, update its path and total distance from 
-        # starting node if the total distance is less than the current distance
-        # in dist array
+    
         for (node, weight) in connections: 
             tot_dist = weight + min_dist
             if tot_dist < dist[node][0] and node not in seen:
@@ -119,5 +102,5 @@ pos = nx.circular_layout(G)
 nx.draw_networkx_nodes(G, pos, node_size=400, node_color='pink')
 nx.draw_networkx_edges(G, pos, edgelist=e, edge_color='grey')
 nx.draw_networkx_edge_labels(G, pos, edge_labels={(x,y): weight for x,y,weight in G.edges.data("weight")}, font_color='red')
-nx.draw_networkx_labels(G, pos, labels=dict(G.nodes(data='name')))
+nx.draw_networkx_labels(G, pos, labels=dict(G.nodes(data='name')), font_size=9)
 plt.show()

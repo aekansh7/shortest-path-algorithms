@@ -78,48 +78,36 @@ G.add_weighted_edges_from(e)
 
 # A* search algo
 def a_star_search(G, node_x, node_y):
-    # Get index of node (or maintain int passed in)
-    # nodenum = self.get_index_from_node(node)
-
-    # Make an array keeping track of distance from node to any node
-    # in self.nodes. Initialize to infinity for all nodes but the 
-    # starting node, keep track of "path" which relates to distance.
-    # Index 0 = distance, index 1 = node hops
+ # distance is list of lists containing smallest from source node
+ # to each node in the network   
     dist = [None] * len(G.nodes())
     for i in range(len(G.nodes())):
         dist[i] = [float("inf")]
         dist[i].append([node_x])
-    
+    # distance from source node to itself
     dist[node_x][0] = 0
-    # Queue of all nodes in the graph
-    # Note the integers in the queue correspond to indices of node
-    # locations in the self.nodes array
+    
+# PriorityQueue data structure to keep track of nodes
     frontier = PriorityQueue()
     frontier.put(node_x, 0)
     # Set of numbers seen so far
     seen = set()
+
+    # iterate over queue to find the minimum distance
     while not frontier.empty():
+        # if goal node is specified then stop 
+        # when min distance to goal node has been found
         if node_y in seen:
             break
-        # Get node in queue that has not yet been seen
-        # that has smallest distance to starting node
-        # min_dist = float("inf")
-        # min_node = None
-        # for n in queue: 
-        #     if dist[n][0] < min_dist and n not in seen:
-        #         min_dist = dist[n][0]
-        #         min_node = n
-        
+        # determine node with the smallest distance from the current node
         min_node = frontier.get()
         min_dist = dist[min_node][0]
         print(f"Min node: {min_node}")
-        # Add min distance node to seen, remove from queue
+        # add min node to the seen set
         seen.add(min_node)
-        # Get all next hops 
+        # Get nodes connected to min node 
         connections = [(n, G[min_node][n]["weight"]) for n in G.neighbors(min_node)]
-        # For each connection, update its path and total distance from 
-        # starting node if the total distance is less than the current distance
-        # in dist array
+        # update the distance and the path using the heuristic
         for (node, weight) in connections: 
             tot_dist = weight + min_dist
             if tot_dist < dist[node][0] and node not in seen:
@@ -129,16 +117,20 @@ def a_star_search(G, node_x, node_y):
                 frontier.put(node, tot_dist + get_heuristic(node, node_y))
     return dist  
 
-node_x = 0
-node_y = 4
+#input source and destination nodes here
+node_x = 0 #source node
+node_y = 4 #destination node
 
 dist = a_star_search(G, node_x=node_x, node_y=node_y)
+# print the distance from source to destination node
 print('The distance returned by A* is:', dist[node_y])
 
 pos = nx.circular_layout(G)
 # nx.draw_networkx_edge_labels(G,pos)
 nx.draw_networkx_nodes(G, pos, node_size=400, node_color='pink')
 nx.draw_networkx_edges(G, pos, edgelist=e, edge_color='grey')
+nx.draw_networkx_edges(G, pos, edgelist=[(dist[node_y][1][idx], dist[node_y][1][idx+1], get_dist_metric(idx, idx+1)) 
+                                         for idx in range(len(dist[node_y][1]) - 1)], edge_color='red', arrows=True)
 nx.draw_networkx_edge_labels(G, pos, edge_labels={(x,y): weight for x,y,weight in G.edges.data("weight")}, font_color='red')
 nx.draw_networkx_labels(G, pos, labels=dict(G.nodes(data='name')), font_size=9)
 plt.show()
