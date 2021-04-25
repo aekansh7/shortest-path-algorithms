@@ -30,29 +30,8 @@ def get_info_dict(node):
     return info_dict[node]
 
 #code for heuristic attribute if required 
-def get_heuristic(node, node_y):
-    if node == node_y:
-        return 0
-    values = {(0,1): 0.525,
-                 (0,2): 0.77,
-                 (0,3): 0.48,
-                 (0,4): 0.675,
-                 (0,5): 0.56,
-                 (1,2): 1.29,
-                 (1,3): 1.02,
-                 (1,4): 1.21,
-                 (1,5): 1.13,
-                 (2,3): 0.335,
-                 (2,4): 0.235,
-                 (2,5): 0.368,
-                 (3,4): 0.16,
-                 (3,5): 0.238,
-                 (4,5): 0.2,
-                 }
-    heuristic = values.get((node, node_y))
-    if not heuristic:
-        heuristic = values.get((node_y, node))
-    return heuristic
+def get_heuristic(node_x, node_y):
+    return 0
 
 # Code from networkx that creates the same graph
 G = nx.Graph()
@@ -140,5 +119,5 @@ pos = nx.circular_layout(G)
 nx.draw_networkx_nodes(G, pos, node_size=400, node_color='pink')
 nx.draw_networkx_edges(G, pos, edgelist=e, edge_color='grey')
 nx.draw_networkx_edge_labels(G, pos, edge_labels={(x,y): weight for x,y,weight in G.edges.data("weight")}, font_color='red')
-nx.draw_networkx_labels(G, pos, labels=dict(G.nodes(data='name')), font_size=9)
+nx.draw_networkx_labels(G, pos, labels=dict(G.nodes(data='name')))
 plt.show()
